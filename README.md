@@ -384,6 +384,46 @@ mysql> desc test2;
 8 rows in set (0.00 sec)
 ```
 3.11 撰写一个函数 get_deptno_from_empno，输入 empno，输出对应的 deptno。 简述函数和存储过程有什么不同。
+```sql
+mysql> DELIMITER $$
+mysql> CREATE FUNCTION func_get_deptno_from_empno (empno INT)
+    -> RETURNS int
+    -> BEGIN
+    ->     RETURN (SELECT deptno FROM test2 WHERE test2.empno = empno);
+    -> END$$
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql>
+mysql> SELECT func_get_deptno_from_empno (7369);
++-----------------------------------+
+| func_get_deptno_from_empno (7369) |
++-----------------------------------+
+|                                20 |
++-----------------------------------+
+1 row in set (0.01 sec)
+
+mysql> select * from test2;
++----------+-----------+-----------+------+------------+--------+------+--------+
+| empno    | ename     | job       | MGR  | Hiredate   | salary | comm | deptno |
++----------+-----------+-----------+------+------------+--------+------+--------+
+|     7369 | SMITH     | CLERK     | 7902 | 1981-03-12 |    800 | NULL |     20 |
+|     7499 | ALLEN     | SALESMAN  | 7698 | 1982-03-12 |   1600 |  300 |     30 |
+|     7521 | WARD      | SALESMAN  | 7698 | 1838-03-12 |   1250 |  500 |     30 |
+|     7566 | JONES     | MANAGER   | 7839 | 1981-03-12 |   2975 | NULL |     20 |
+|     7654 | MARTIN    | SALESMAN  | 7698 | 1981-01-12 |   1250 | 1400 |     30 |
+|     7698 | BLAKE     | MANAGER   | 7839 | 1985-03-12 |   2450 | NULL |     10 |
+|     7788 | SCOTT     | ANALYST   | 7566 | 1981-03-12 |   3000 | NULL |     20 |
+|     7839 | KING      | PRESIDENT | NULL | 1981-03-12 |   5000 | NULL |     10 |
+|     7844 | TURNER    | SALESMAN  | 7689 | 1981-03-12 |   1500 |    0 |     30 |
+|     7878 | ADAMS     | CLERK     | 7788 | 1981-03-12 |   1100 | NULL |     20 |
+|     7900 | JAMES     | CLERK     | 7698 | 1981-03-12 |    950 | NULL |     30 |
+|     7902 | FORD      | ANALYST   | 7566 | 1981-03-12 |   3000 | NULL |     20 |
+|     7934 | MILLER    | CLERK     | 7782 | 1981-03-12 |   1300 | NULL |     10 |
+| 17061521 | QIUFUKANG | CLERK     | 7782 | 2000-03-12 |   NULL | NULL |     10 |
++----------+-----------+-----------+------+------------+--------+------+--------+
+14 rows in set (0.00 sec)
+```
 
 4 建立一个新用户，账号为自己的姓名拼音，密码为自己的学号；
 
