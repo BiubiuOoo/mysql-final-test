@@ -562,6 +562,16 @@ mysql> select @@tx_isolation;
 | REPEATABLE-READ |
 +-----------------+
 1 row in set, 1 warning (0.00 sec)
+
+OR
+
+mysql> show variables like 'tx_isolation';
++---------------+-----------------+
+| Variable_name | Value           |
++---------------+-----------------+
+| tx_isolation  | REPEATABLE-READ |
++---------------+-----------------+
+1 row in set, 1 warning (0.00 sec)
 ```
 + 2.开启事务,回滚事务
 + 3.事务级别中脏读,幻读 
