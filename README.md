@@ -260,10 +260,46 @@ mysql> select * from test2 WHERE sal > (
 7 rows in set (0.00 sec)
 ```
 3.5 计算每个人的收入(ename, sal + comm)；计算总共有多少人；计算所有人的平均收入。 提示：计算时 NULL 要当做 0 处理； 
+```sql
+mysql> select ename,sal+comm,count(ename) counts,AVG(sal+comm) average_sal_comm from test2;
++-------+----------+--------+------------------+
+| ename | sal+comm | counts | average_sal_comm |
++-------+----------+--------+------------------+
+| SMITH |     NULL |     14 |             1950 |
++-------+----------+--------+------------------+
+1 row in set (0.01 sec)
 
+mysql> select ename,coalesce(sal+comm,0),count(ename),coalesce(AVG(sal+comm),0) from test2;
++-------+----------------------+--------------+---------------------------+
+| ename | coalesce(sal+comm,0) | count(ename) | coalesce(AVG(sal+comm),0) |
++-------+----------------------+--------------+---------------------------+
+| SMITH |                    0 |           14 |                      1950 |
++-------+----------------------+--------------+---------------------------+
+1 row in set (0.00 sec)
+
+```
 3.6 显示每个人的下属, 没有下属的显示 NULL。本操作使用关系代数中哪几种运算？
-
+```sql
+mysql> select t1.ename My_b_b_name,t2.ename My_b_name ,t3.ename My_name
+    -> from (test2 t1 inner join test2 t2 on t1. empno= t2. mgr)  inner join test2 t3
+    -> on t2.empno = t3.mgr;
++-------------+-----------+---------+
+| My_b_b_name | My_b_name | My_name |
++-------------+-----------+---------+
+| JONES       | FORD      | SMITH   |
+| KING        | BLAKE     | ALLEN   |
+| KING        | BLAKE     | WARD    |
+| KING        | BLAKE     | MARTIN  |
+| KING        | JONES     | SCOTT   |
+| JONES       | SCOTT     | ADAMS   |
+| KING        | BLAKE     | JAMES   |
+| KING        | JONES     | FORD    |
++-------------+-----------+---------+
+8 rows in set (0.01 sec)
+```
++ 本操作使用关系代数中是：交
 3.7 建立一个视图：每个人的empno, ename, job 和 loc。简述为什么要建立本视图。
+
 
 3.8 为表2增加一个约束：deptno字段需要在表1中存在；这称做什么完整性？
 
