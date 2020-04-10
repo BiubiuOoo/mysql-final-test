@@ -299,7 +299,55 @@ mysql> select t1.ename My_b_b_name,t2.ename My_b_name ,t3.ename My_name
 ```
 + 本操作使用关系代数中是：交
 3.7 建立一个视图：每个人的empno, ename, job 和 loc。简述为什么要建立本视图。
+```sql
+mysql> select * from test1 t1 inner join test2 t2 on t1.deptno=t2.deptno;
++--------+------------+----------+----------+-----------+-----------+------+------------+------+------+--------+
+| deptno | dname      | loc      | empno    | ename     | job       | MGR  | Hiredate   | sal  | comm | deptno |
++--------+------------+----------+----------+-----------+-----------+------+------------+------+------+--------+
+|     20 | RESEARCH   | DALLAS   |     7369 | SMITH     | CLERK     | 7902 | 1981-03-12 |  800 | NULL |     20 |
+|     30 | SALES      | CHICAGO  |     7499 | ALLEN     | SALESMAN  | 7698 | 1982-03-12 | 1600 |  300 |     30 |
+|     30 | SALES      | CHICAGO  |     7521 | WARD      | SALESMAN  | 7698 | 1838-03-12 | 1250 |  500 |     30 |
+|     20 | RESEARCH   | DALLAS   |     7566 | JONES     | MANAGER   | 7839 | 1981-03-12 | 2975 | NULL |     20 |
+|     30 | SALES      | CHICAGO  |     7654 | MARTIN    | SALESMAN  | 7698 | 1981-01-12 | 1250 | 1400 |     30 |
+|     10 | ACCOUNTING | NEW YORK |     7698 | BLAKE     | MANAGER   | 7839 | 1985-03-12 | 2450 | NULL |     10 |
+|     20 | RESEARCH   | DALLAS   |     7788 | SCOTT     | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     10 | ACCOUNTING | NEW YORK |     7839 | KING      | PRESIDENT | NULL | 1981-03-12 | 5000 | NULL |     10 |
+|     30 | SALES      | CHICAGO  |     7844 | TURNER    | SALESMAN  | 7689 | 1981-03-12 | 1500 |    0 |     30 |
+|     20 | RESEARCH   | DALLAS   |     7878 | ADAMS     | CLERK     | 7788 | 1981-03-12 | 1100 | NULL |     20 |
+|     30 | SALES      | CHICAGO  |     7900 | JAMES     | CLERK     | 7698 | 1981-03-12 |  950 | NULL |     30 |
+|     20 | RESEARCH   | DALLAS   |     7902 | FORD      | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     10 | ACCOUNTING | NEW YORK |     7934 | MILLER    | CLERK     | 7782 | 1981-03-12 | 1300 | NULL |     10 |
+|     10 | ACCOUNTING | NEW YORK | 17061521 | QIUFUKANG | CLERK     | 7782 | 2000-03-12 | NULL | NULL |     10 |
++--------+------------+----------+----------+-----------+-----------+------+------------+------+------+--------+
+14 rows in set (0.01 sec)
 
+mysql> create view view_test1_test2
+    -> as
+    -> select empno,ename,job,loc from test1 t1 inner join test2 t2 on t1.deptno=t2.deptno;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from view_test1_test2;
++----------+-----------+-----------+----------+
+| empno    | ename     | job       | loc      |
++----------+-----------+-----------+----------+
+|     7369 | SMITH     | CLERK     | DALLAS   |
+|     7499 | ALLEN     | SALESMAN  | CHICAGO  |
+|     7521 | WARD      | SALESMAN  | CHICAGO  |
+|     7566 | JONES     | MANAGER   | DALLAS   |
+|     7654 | MARTIN    | SALESMAN  | CHICAGO  |
+|     7698 | BLAKE     | MANAGER   | NEW YORK |
+|     7788 | SCOTT     | ANALYST   | DALLAS   |
+|     7839 | KING      | PRESIDENT | NEW YORK |
+|     7844 | TURNER    | SALESMAN  | CHICAGO  |
+|     7878 | ADAMS     | CLERK     | DALLAS   |
+|     7900 | JAMES     | CLERK     | CHICAGO  |
+|     7902 | FORD      | ANALYST   | DALLAS   |
+|     7934 | MILLER    | CLERK     | NEW YORK |
+| 17061521 | QIUFUKANG | CLERK     | NEW YORK |
++----------+-----------+-----------+----------+
+14 rows in set (0.00 sec)
+```
++ 建立本视图的目的：为了提高复杂SQL语句的复用性和表操作的安全性,MySQL数据库管理系统提供了视图特性。所谓视图，本质上是一种虚拟表，其内容与真实的表相似，包含系列带有名称的列和行数据。但是，视图并不在数据库中以存储的数据值形式存在。行和列数据来自定义视图的查询所引用基本表，并且在具体引用视图时动态生成。视图使程序员只关心感兴趣的某些特定数据和他们所负责的特定任务。这样程序员只能看到视图中所定义的数据，而不是视图所引用表中的数据，从而提高了数据库中数据的安全性。
 
 3.8 为表2增加一个约束：deptno字段需要在表1中存在；这称做什么完整性？
 
