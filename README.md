@@ -187,9 +187,11 @@ mysql> SELECT * FROM TEST2;
 | 17061521 | QIUFUKANG | CLERK     | 7782 | 2000-03-12 | NULL | NULL |     10 |
 +----------+-----------+-----------+------+------------+------+------+--------+
 14 rows in set (0.00 sec)
+
 ```
 
 3.2 表中入职时间（Hiredate字段）最短的人。
+
 ```sql
 mysql> SELECT * FROM test2 WHERE Hiredate = (SELECT MAX(Hiredate) FROM test2);
 +----------+-----------+-------+------+------------+------+------+--------+
@@ -232,6 +234,7 @@ mysql> select found_rows();
 
 
 3.4 将 MILLER 的 comm 增加 100； 然后，找到 comm 比 MILLER 低的人；
+
 ```sql
 mysql> select * from test2 WHERE sal < (
     -> select sal+100 from test2 WHERE ename='MILLER');
@@ -328,6 +331,7 @@ mysql> select t1.ename My_b_b_name,t2.ename My_b_name ,t3.ename My_name
 + 本操作使用关系代数中是：交
 
 3.7 建立一个视图：每个人的empno, ename, job 和 loc。简述为什么要建立本视图。
+
 ```sql
 mysql> select * from test1 t1 inner join test2 t2 on t1.deptno=t2.deptno;
 +--------+------------+----------+----------+-----------+-----------+------+------------+------+------+--------+
@@ -381,6 +385,7 @@ mysql> select * from view_test1_test2;
 
 
 3.8 为表2增加一个约束：deptno字段需要在表1中存在；这称做什么完整性？
+
 ```sql
 mysql> ALTER table test2
     -> add constraint fk_deptno
