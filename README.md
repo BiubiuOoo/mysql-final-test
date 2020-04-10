@@ -370,6 +370,30 @@ mysql> select * from view_test1_test2;
 + 建立本视图的目的：为了提高复杂SQL语句的复用性和表操作的安全性,MySQL数据库管理系统提供了视图特性。所谓视图，本质上是一种虚拟表，其内容与真实的表相似，包含系列带有名称的列和行数据。但是，视图并不在数据库中以存储的数据值形式存在。行和列数据来自定义视图的查询所引用基本表，并且在具体引用视图时动态生成。视图使程序员只关心感兴趣的某些特定数据和他们所负责的特定任务。这样程序员只能看到视图中所定义的数据，而不是视图所引用表中的数据，从而提高了数据库中数据的安全性。
 
 3.8 为表2增加一个约束：deptno字段需要在表1中存在；这称做什么完整性？
+```sql
+mysql> ALTER table test2
+    -> add constraint fk_deptno
+    -> foreign key(deptno)
+    -> references test1 (deptno);
+Query OK, 14 rows affected (0.10 sec)
+Records: 14  Duplicates: 0  Warnings: 0
+
+mysql> desc test2;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| empno    | int(11)     | NO   | PRI | NULL    |       |
+| ename    | varchar(20) | YES  | UNI | NULL    |       |
+| job      | varchar(20) | YES  |     | NULL    |       |
+| MGR      | int(11)     | YES  |     | NULL    |       |
+| Hiredate | date        | YES  |     | NULL    |       |
+| sal      | float       | YES  |     | NULL    |       |
+| comm     | float       | YES  |     | NULL    |       |
+| deptno   | int(11)     | NO   | MUL | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+```
+**这个我终于学会了！**
 
 + 这称做数据的完整性。
 
