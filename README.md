@@ -259,20 +259,42 @@ mysql> select ename from test2 WHERE sal < (
 ```
 3.5 计算每个人的收入(ename, sal + comm)；计算总共有多少人；计算所有人的平均收入。 提示：计算时 NULL 要当做 0 处理； 
 ```sql
-mysql> select ename,sal+comm,count(ename) counts,AVG(sal+comm) average_sal_comm from test2;
-+-------+----------+--------+------------------+
-| ename | sal+comm | counts | average_sal_comm |
-+-------+----------+--------+------------------+
-| SMITH |     NULL |     14 |             1950 |
-+-------+----------+--------+------------------+
-1 row in set (0.01 sec)
+mysql> select ename,IFNULL(sal,0)+IFNULL(comm,0) sumvalue from test2;
++-----------+----------+
+| ename     | sumvalue |
++-----------+----------+
+| SMITH     |      800 |
+| ALLEN     |     1900 |
+| WARD      |     1750 |
+| JONES     |     2975 |
+| MARTIN    |     2650 |
+| BLAKE     |     2450 |
+| SCOTT     |     3000 |
+| KING      |     5000 |
+| TURNER    |     1500 |
+| ADAMS     |     1100 |
+| JAMES     |      950 |
+| FORD      |     3000 |
+| MILLER    |     1300 |
+| QIUFUKANG |        0 |
++-----------+----------+
+14 rows in set (0.00 sec)
 
-mysql> select ename,coalesce(sal+comm,0),count(ename),coalesce(AVG(sal+comm),0) from test2;
-+-------+----------------------+--------------+---------------------------+
-| ename | coalesce(sal+comm,0) | count(ename) | coalesce(AVG(sal+comm),0) |
-+-------+----------------------+--------------+---------------------------+
-| SMITH |                    0 |           14 |                      1950 |
-+-------+----------------------+--------------+---------------------------+
+mysql> select count(ename) from test2;
++--------------+
+| count(ename) |
++--------------+
+|           14 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT AVG(IFNULL(sal,0)+IFNULL(comm,0))
+    -> averagevalue  from test2;
++--------------------+
+| averagevalue       |
++--------------------+
+| 2026.7857142857142 |
++--------------------+
 1 row in set (0.00 sec)
 
 ```
