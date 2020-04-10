@@ -548,9 +548,116 @@ mysql> show grants for `QIUFUKANG`@`*`
 + 3.Isolation 隔离性，事务是并发控制机制，他们的交错也需要一致性，隔离隐藏，一般通过悲观或者乐观锁实现
 
 + 4.Durability 耐久性，一个成功的事务将永久性地改变系统的状态，所以在它结束之前，所有导致状态的变化都记录在一个持久的事务日志中
-            
+
+
 8.1 编写一个事务，“将 MILLER 的 comm 增加 100，如果增加后的 comm 大于 1000 则回滚”；
 
+```sql
+mysql> SELECT * FROM TEST2;		# 查看原表信息
++----------+-----------+-----------+------+------------+------+------+--------+
+| empno    | ename     | job       | MGR  | Hiredate   | sal  | comm | deptno |
++----------+-----------+-----------+------+------------+------+------+--------+
+|     7369 | SMITH     | CLERK     | 7902 | 1981-03-12 |  800 | NULL |     20 |
+|     7499 | ALLEN     | SALESMAN  | 7698 | 1982-03-12 | 1600 |  300 |     30 |
+|     7521 | WARD      | SALESMAN  | 7698 | 1838-03-12 | 1250 |  500 |     30 |
+|     7566 | JONES     | MANAGER   | 7839 | 1981-03-12 | 2975 | NULL |     20 |
+|     7654 | MARTIN    | SALESMAN  | 7698 | 1981-01-12 | 1250 | 1400 |     30 |
+|     7698 | BLAKE     | MANAGER   | 7839 | 1985-03-12 | 2450 | NULL |     10 |
+|     7788 | SCOTT     | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     7839 | KING      | PRESIDENT | NULL | 1981-03-12 | 5000 | NULL |     10 |
+|     7844 | TURNER    | SALESMAN  | 7689 | 1981-03-12 | 1500 |    0 |     30 |
+|     7878 | ADAMS     | CLERK     | 7788 | 1981-03-12 | 1100 | NULL |     20 |
+|     7900 | JAMES     | CLERK     | 7698 | 1981-03-12 |  950 | NULL |     30 |
+|     7902 | FORD      | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     7934 | MILLER    | CLERK     | 7782 | 1981-03-12 | 1300 |    0 |     10 |
+| 17061521 | QIUFUKANG | CLERK     | 7782 | 2000-03-12 | NULL | NULL |     10 |
++----------+-----------+-----------+------+------------+------+------+--------+
+14 rows in set (0.00 sec)
+
+mysql> BEGIN;	# 开启一个事务
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>  update test2 set comm=IFNULL(comm,0)+100 where ename='MILLER'; # 更新一条记录
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> COMMIT；		#提交事务
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> SELECT * FROM TEST2;	# MILLER的comm增加100变为100
++----------+-----------+-----------+------+------------+------+------+--------+
+| empno    | ename     | job       | MGR  | Hiredate   | sal  | comm | deptno |
++----------+-----------+-----------+------+------------+------+------+--------+
+|     7369 | SMITH     | CLERK     | 7902 | 1981-03-12 |  800 | NULL |     20 |
+|     7499 | ALLEN     | SALESMAN  | 7698 | 1982-03-12 | 1600 |  300 |     30 |
+|     7521 | WARD      | SALESMAN  | 7698 | 1838-03-12 | 1250 |  500 |     30 |
+|     7566 | JONES     | MANAGER   | 7839 | 1981-03-12 | 2975 | NULL |     20 |
+|     7654 | MARTIN    | SALESMAN  | 7698 | 1981-01-12 | 1250 | 1400 |     30 |
+|     7698 | BLAKE     | MANAGER   | 7839 | 1985-03-12 | 2450 | NULL |     10 |
+|     7788 | SCOTT     | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     7839 | KING      | PRESIDENT | NULL | 1981-03-12 | 5000 | NULL |     10 |
+|     7844 | TURNER    | SALESMAN  | 7689 | 1981-03-12 | 1500 |    0 |     30 |
+|     7878 | ADAMS     | CLERK     | 7788 | 1981-03-12 | 1100 | NULL |     20 |
+|     7900 | JAMES     | CLERK     | 7698 | 1981-03-12 |  950 | NULL |     30 |
+|     7902 | FORD      | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     7934 | MILLER    | CLERK     | 7782 | 1981-03-12 | 1300 |  100 |     10 |
+| 17061521 | QIUFUKANG | CLERK     | 7782 | 2000-03-12 | NULL | NULL |     10 |
++----------+-----------+-----------+------+------------+------+------+--------+
+14 rows in set (0.00 sec)
+
+mysql> BEGIN;		# 开始另外一个事务
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>  update test2 set comm=IFNULL(comm,0)+100 where ename='MILLER'; #更新一条记录
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM TEST2;		## MILLER的comm增加100变为200
++----------+-----------+-----------+------+------------+------+------+--------+
+| empno    | ename     | job       | MGR  | Hiredate   | sal  | comm | deptno |
++----------+-----------+-----------+------+------------+------+------+--------+
+|     7369 | SMITH     | CLERK     | 7902 | 1981-03-12 |  800 | NULL |     20 |
+|     7499 | ALLEN     | SALESMAN  | 7698 | 1982-03-12 | 1600 |  300 |     30 |
+|     7521 | WARD      | SALESMAN  | 7698 | 1838-03-12 | 1250 |  500 |     30 |
+|     7566 | JONES     | MANAGER   | 7839 | 1981-03-12 | 2975 | NULL |     20 |
+|     7654 | MARTIN    | SALESMAN  | 7698 | 1981-01-12 | 1250 | 1400 |     30 |
+|     7698 | BLAKE     | MANAGER   | 7839 | 1985-03-12 | 2450 | NULL |     10 |
+|     7788 | SCOTT     | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     7839 | KING      | PRESIDENT | NULL | 1981-03-12 | 5000 | NULL |     10 |
+|     7844 | TURNER    | SALESMAN  | 7689 | 1981-03-12 | 1500 |    0 |     30 |
+|     7878 | ADAMS     | CLERK     | 7788 | 1981-03-12 | 1100 | NULL |     20 |
+|     7900 | JAMES     | CLERK     | 7698 | 1981-03-12 |  950 | NULL |     30 |
+|     7902 | FORD      | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     7934 | MILLER    | CLERK     | 7782 | 1981-03-12 | 1300 |  200 |     10 |
+| 17061521 | QIUFUKANG | CLERK     | 7782 | 2000-03-12 | NULL | NULL |     10 |
++----------+-----------+-----------+------+------------+------+------+--------+
+14 rows in set (0.00 sec)
+
+mysql> ROLLBACK;	# 回滚事务
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> SELECT * FROM TEST2;	# 此时MILLER的comm变回100
++----------+-----------+-----------+------+------------+------+------+--------+
+| empno    | ename     | job       | MGR  | Hiredate   | sal  | comm | deptno |
++----------+-----------+-----------+------+------------+------+------+--------+
+|     7369 | SMITH     | CLERK     | 7902 | 1981-03-12 |  800 | NULL |     20 |
+|     7499 | ALLEN     | SALESMAN  | 7698 | 1982-03-12 | 1600 |  300 |     30 |
+|     7521 | WARD      | SALESMAN  | 7698 | 1838-03-12 | 1250 |  500 |     30 |
+|     7566 | JONES     | MANAGER   | 7839 | 1981-03-12 | 2975 | NULL |     20 |
+|     7654 | MARTIN    | SALESMAN  | 7698 | 1981-01-12 | 1250 | 1400 |     30 |
+|     7698 | BLAKE     | MANAGER   | 7839 | 1985-03-12 | 2450 | NULL |     10 |
+|     7788 | SCOTT     | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     7839 | KING      | PRESIDENT | NULL | 1981-03-12 | 5000 | NULL |     10 |
+|     7844 | TURNER    | SALESMAN  | 7689 | 1981-03-12 | 1500 |    0 |     30 |
+|     7878 | ADAMS     | CLERK     | 7788 | 1981-03-12 | 1100 | NULL |     20 |
+|     7900 | JAMES     | CLERK     | 7698 | 1981-03-12 |  950 | NULL |     30 |
+|     7902 | FORD      | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     7934 | MILLER    | CLERK     | 7782 | 1981-03-12 | 1300 |  100 |     10 |
+| 17061521 | QIUFUKANG | CLERK     | 7782 | 2000-03-12 | NULL | NULL |     10 |
++----------+-----------+-----------+------+------------+------+------+--------+
+14 rows in set (0.00 sec)
+
+```
 8.2 如何查看 MySQL 当前的隔离级别？
 
 + 1.选择数据库,查看当前事务隔离界别
