@@ -155,6 +155,7 @@ mysql> select * from test2;
 +-------+--------+-----------+------+------------+------+------+--------+
 13 rows in set (0.00 sec)
 ```
+
 3.1 表2 中再插入一条记录：
 
 `(你的学号，你的姓名或者拼音， “CLERK”, 7782, 你的生日,  NULL, NULL, 10)`
@@ -187,6 +188,7 @@ mysql> SELECT * FROM TEST2;
 +----------+-----------+-----------+------+------------+------+------+--------+
 14 rows in set (0.00 sec)
 ```
+
 3.2 表中入职时间（Hiredate字段）最短的人。
 ```sql
 mysql> SELECT * FROM test2 WHERE Hiredate = (SELECT MAX(Hiredate) FROM test2);
@@ -202,6 +204,7 @@ mysql> SELECT * FROM test2 WHERE Hiredate = (SELECT MAX(Hiredate) FROM test2);
 ```
 
 3.3 有几种职位（job字段）？在关系代数中，本操作是什么运算？
+
 ```sql
 mysql> select distinct job
     -> from test2;
@@ -226,6 +229,7 @@ mysql> select found_rows();
 ```
 + job字段有5个职位
 + 在关系代数中，本操作是什么运算:选择
+
 
 3.4 将 MILLER 的 comm 增加 100； 然后，找到 comm 比 MILLER 低的人；
 ```sql
@@ -257,7 +261,9 @@ mysql> select ename from test2 WHERE sal < (
 +--------+
 6 rows in set (0.00 sec)
 ```
+
 3.5 计算每个人的收入(ename, sal + comm)；计算总共有多少人；计算所有人的平均收入。 提示：计算时 NULL 要当做 0 处理； 
+
 ```sql
 mysql> select ename,IFNULL(sal,0)+IFNULL(comm,0) sumvalue from test2;
 +-----------+----------+
@@ -298,7 +304,9 @@ mysql> SELECT AVG(IFNULL(sal,0)+IFNULL(comm,0))
 1 row in set (0.00 sec)
 
 ```
+
 3.6 显示每个人的下属, 没有下属的显示 NULL。本操作使用关系代数中哪几种运算？
+
 ```sql
 mysql> select t1.ename My_b_b_name,t2.ename My_b_name ,t3.ename My_name
     -> from (test2 t1 inner join test2 t2 on t1. empno= t2. mgr)  inner join test2 t3
@@ -318,6 +326,7 @@ mysql> select t1.ename My_b_b_name,t2.ename My_b_name ,t3.ename My_name
 8 rows in set (0.01 sec)
 ```
 + 本操作使用关系代数中是：交
+
 3.7 建立一个视图：每个人的empno, ename, job 和 loc。简述为什么要建立本视图。
 ```sql
 mysql> select * from test1 t1 inner join test2 t2 on t1.deptno=t2.deptno;
@@ -367,7 +376,9 @@ mysql> select * from view_test1_test2;
 +----------+-----------+-----------+----------+
 14 rows in set (0.00 sec)
 ```
+
 + 建立本视图的目的：为了提高复杂SQL语句的复用性和表操作的安全性,MySQL数据库管理系统提供了视图特性。所谓视图，本质上是一种虚拟表，其内容与真实的表相似，包含系列带有名称的列和行数据。但是，视图并不在数据库中以存储的数据值形式存在。行和列数据来自定义视图的查询所引用基本表，并且在具体引用视图时动态生成。视图使程序员只关心感兴趣的某些特定数据和他们所负责的特定任务。这样程序员只能看到视图中所定义的数据，而不是视图所引用表中的数据，从而提高了数据库中数据的安全性。
+
 
 3.8 为表2增加一个约束：deptno字段需要在表1中存在；这称做什么完整性？
 ```sql
@@ -397,6 +408,7 @@ mysql> desc test2;
 
 + 这称做数据的完整性。
 
+
 3.9 为表2增加一个索引：ename 字段。简述为什么要在 ename 字段建立索引
 ```sql
 mysql> create unique index index_ename
@@ -405,6 +417,7 @@ Query OK, 0 rows affected (0.05 sec)
 Records: 0  Duplicates: 0  Warnings: 0
 
 ```
+
 + 这样主要是为了提高从表中检索数据的速度。
 
 3.10 将表2的 sal 字段改名为 salary
@@ -429,6 +442,7 @@ mysql> desc test2;
 +----------+-------------+------+-----+---------+-------+
 8 rows in set (0.00 sec)
 ```
+
 3.11 撰写一个函数 get_deptno_from_empno，输入 empno，输出对应的 deptno。 简述函数和存储过程有什么不同。
 ```sql
 mysql> DELIMITER $$
@@ -470,6 +484,7 @@ mysql> select * from test2;
 +----------+-----------+-----------+------+------------+--------+------+--------+
 14 rows in set (0.00 sec)
 ```
+
 + 对于存储过程来说可以返回参数，如记录集，而函数只能返回值或者表对象。函数只能返回一个变量；而存储过程可以返回多个。存储过程的参数可以有IN,OUT,INOUT三种类型，而函数只能有IN类存储过程声明时不需要返回类型，而函数声明时需要描述返回类型，且函数体中必须包含一个有效的RETURN语句。
 + 存储过程，可以使用非确定函数，不允许在用户定义函数主体中内置非确定函数。
 + 存储过程一般是作为一个独立的部分来执行（ EXECUTE 语句执行），而函数可以作为查询语句的一个部分来调用（SELECT调用），由于函数可以返回一个表对象，因此它可以在查询语句中位于FROM关键字的后面。 SQL语句中不可用存储过程，而可以使用函数。
