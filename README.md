@@ -429,13 +429,32 @@ mysql> select * from test2;
 + 存储过程一般是作为一个独立的部分来执行（ EXECUTE 语句执行），而函数可以作为查询语句的一个部分来调用（SELECT调用），由于函数可以返回一个表对象，因此它可以在查询语句中位于FROM关键字的后面。 SQL语句中不可用存储过程，而可以使用函数。
 
 4 建立一个新用户，账号为自己的姓名拼音，密码为自己的学号；
-
+```sql
+mysql> create user`QIUFUKANG`@`*` identified by'17061521';
+Query OK, 0 rows affected (0.01 sec)
+```
 
 4.1 将表1的SELECT, INSERT, UPDATE(ename)权限赋给该账号。
-
+```sql
+mysql> GRANT select,insert,update ON biu1.test1 TO `QIUFUKANG`@`*`;
+Query OK, 0 rows affected (0.01 sec)
+```
 4.2 显示该账号权限
 
+```sql
+mysql> show grants for `QIUFUKANG`@`*`
+    -> ;
++-------------------------------------------------------------------+
+| Grants for QIUFUKANG@*                                            |
++-------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'QIUFUKANG'@'*'                             |
+| GRANT SELECT, INSERT, UPDATE ON `biu1`.`test1` TO 'QIUFUKANG'@'*' |
++-------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+```
 4.3 `with grant option` 是什么意思。
+
++ 用以上命令授权的用户可以给其他用户授权。
 
 5 表 1 和表 2 这样设计是否符合第一范式，是否符合第二范式，为什么？
 + 表一符合第一范式和第二范式。因为第一个表的关系中的每个属性都不可再分，满足第一范式；只要表中的一个属性确定了其他的属性也随之确定了，所以满足第二范式。
