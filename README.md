@@ -16,22 +16,75 @@
 
 
 1 打印当前时间（例如 2020-04-07 13:41:42），写出SQL语句和结果
+```sql
+mysql> select now();
++---------------------+
+| now()               |
++---------------------+
+| 2020-04-10 07:57:14 |
++---------------------+
+1 row in set (0.01 sec)
+```
 
 2 组合打印自己的姓名和学号
 
 (例如 张三+123456 或者 zhangsan+123456 显示需包含加号)，写出SQL语句和结果
+```sql
+mysql> select CONCAT('邱富康','+','17061521');
++---------------------------------+
+| CONCAT('邱富康','+','17061521') |
++---------------------------------+
+| 邱富康+17061521                 |
++---------------------------------+
+1 row in set (0.01 sec)
+```
 
 3 建立如下表1和表2，写出建表语句和插入语句。
 
 表1：其中deptno为主键
 ```
-deptno, deptno,    loc
+deptno, dname,    loc
 (10, "ACCOUNTING", "NEW YORK"),
 (20, "RESEARCH", "DALLAS"),
 (30, "SALES", "CHICAGO"),
 (40, "OPERATIONS", "BOSTON")
 ```
 
+```sql
+mysql> use biu1;
+Database changed
+mysql> create table test1(
+    -> deptno int PRIMARY KEY,
+    -> deptno varchar(20),
+    -> loc varchar(20)
+    -> );
+ERROR 1060 (42S21): Duplicate column name 'deptno'
+mysql> create table test1(
+    -> deptno int PRIMARY KEY,
+    -> dname varchar(20),
+    -> loc varchar(20)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into test1()
+    -> values(10,'ACCOUNTING','NEW YORK'),
+    -> (20, "RESEARCH", "DALLAS"),
+    -> (30, "SALES", "CHICAGO"),
+    -> (40, "OPERATIONS", "BOSTON");
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from test1;
++--------+------------+----------+
+| deptno | dname      | loc      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+4 rows in set (0.01 sec)
+```
 表2：其中empno字段为主键
 ```
         empno, ename,    job,    MGR,   Hiredate,    sal,   comm, deptno
