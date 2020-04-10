@@ -103,6 +103,58 @@ mysql> select * from test1;
 	(7934, "MILLER", "CLERK", 7782, "1981-03-12", 1300, NULL, 10)
 ```
 
+```sql
+mysql> CREATE TABLE test2(
+    -> empno INT  PRIMARY KEY,
+    -> ename VARCHAR(20),
+    -> job  VARCHAR(20),
+    -> MGR  INT,
+    -> Hiredate Date,
+    -> sal    float,
+    -> comm   float,
+    -> deptno INT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> insert into test2()
+    -> values(7369, "SMITH", "CLERK", 7902, "1981-03-12", 800.00, NULL, 20),
+    -> (7499, "ALLEN", "SALESMAN", 7698, "1982-03-12", 1600, 300, 30),
+    -> (7521, "WARD", "SALESMAN", 7698, "1838-03-12", 1250, 500, 30),
+    -> (7566, "JONES", "MANAGER", 7839, "1981-03-12", 2975, NULL, 20),
+    -> (7654, "MARTIN", "SALESMAN", 7698, "1981-01-12", 1250, 1400, 30),
+    -> (7698, "BLAKE", "MANAGER", 7839, "1985-03-12", 2450, NULL, 10),
+    -> (7788, "SCOTT", "ANALYST", 7566, "1981-03-12", 3000, NULL, 20),
+    -> (7839, "KING", "PRESIDENT", NULL, "1981-03-12", 5000, NULL, 10),
+    -> (7844, "TURNER", "SALESMAN", 7689, "1981-03-12", 1500, 0, 30),
+    -> (7878, "ADAMS", "CLERK", 7788, "1981-03-12", 1100, NULL,20),
+    -> (7900, "JAMES", "CLERK", 7698,"1981-03-12",  950, NULL, 30),
+    -> (7902, "FORD", "ANALYST", 7566, "1981-03-12", 3000, NULL, 20),
+    -> (7934, "MILLER", "CLERK", 7782, "1981-03-12", 1300, NULL, 10);
+Query OK, 13 rows affected (0.01 sec)
+Records: 13  Duplicates: 0  Warnings: 0
+
+mysql> selsct * from test2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'selsct * from test2' at line 1
+mysql> select * from test2;
++-------+--------+-----------+------+------------+------+------+--------+
+| empno | ename  | job       | MGR  | Hiredate   | sal  | comm | deptno |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1981-03-12 |  800 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1982-03-12 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1838-03-12 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-03-12 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-01-12 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1985-03-12 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-03-12 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7689 | 1981-03-12 | 1500 |    0 |     30 |
+|  7878 | ADAMS  | CLERK     | 7788 | 1981-03-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-03-12 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1981-03-12 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+13 rows in set (0.00 sec)
+```
 3.1 表2 中再插入一条记录：
 
 `(你的学号，你的姓名或者拼音， “CLERK”, 7782, 你的生日,  NULL, NULL, 10)`
