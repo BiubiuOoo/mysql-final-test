@@ -430,6 +430,7 @@ mysql> select * from test2;
 
 4 建立一个新用户，账号为自己的姓名拼音，密码为自己的学号；
 
+
 4.1 将表1的SELECT, INSERT, UPDATE(ename)权限赋给该账号。
 
 4.2 显示该账号权限
@@ -443,11 +444,35 @@ mysql> select * from test2;
 7 什么是外模式，什么是内模式。为什么要分成这几层？
 
 8 什么是ACID？
++ ACID 一般是指数据库事务的ACID。
++ 1.Atomicity 原子性，指的是整个事务是一个独立的单元，要么操作成功，要么操作不成功
 
++ 2.Consistency 一致性，事务必须要保持和系统处于一致的状态（如果不一致会导致系统其它的方出现bug）
+
++ 3.Isolation 隔离性，事务是并发控制机制，他们的交错也需要一致性，隔离隐藏，一般通过悲观或者乐观锁实现
+
++ 4.Durability 耐久性，一个成功的事务将永久性地改变系统的状态，所以在它结束之前，所有导致状态的变化都记录在一个持久的事务日志中
+            
 8.1 编写一个事务，“将 MILLER 的 comm 增加 100，如果增加后的 comm 大于 1000 则回滚”；
 
 8.2 如何查看 MySQL 当前的隔离级别？
 
++ 1.选择数据库,查看当前事务隔离界别
+```sql
+select @@tx_isolation;
+```
++ 2.开启事务,回滚事务
++ 3.事务级别中脏读,幻读 
++ 4.MySQL事务autocommit设置,每次sql必须用commit提交生效.
++ MySQL默认操作模式就是autocommit自动提交模式。这就表示除非显式地开始一个事务，否则每个查询都被当做一个单独的事务自动执行。我们可以通过设置autocommit的值改变是否是自动提交autocommit模式。
++ 通过以下命令可以查看当前autocommit模式
+```sql
+show variables like 'autocommit';
+ ```
++ 关闭自动提交,每次sql必须通过commit命令提交.
+```sql
+mysql> set autocommit = 0;
+```
 8.3 如果隔离级别为 READ-UNCOMMITED, 完成 “MILLER 的 comm 增加 100” 事务操作完成后，可能读到的结果有哪些，原因是什么？
 
 9 有哪些场景不适合用关系型数据库？为什么？
