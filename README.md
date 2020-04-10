@@ -161,12 +161,104 @@ mysql> select * from test2;
  
 例如：`(12345,  "Zhangsan", "sTUDENT", 7782, "2000-03-12", NULL, NULL, 10)`
 
+```sql
+mysql> insert into test2()
+    -> values(17061521,'QIUFUKANG','CLERK',7782,'2000-03-12',NULL,NULL,10);
+Query OK, 1 row affected (0.01 sec)
+#### 注：这里我的job选择了CLERK。
+mysql> SELECT * FROM TEST2;
++----------+-----------+-----------+------+------------+------+------+--------+
+| empno    | ename     | job       | MGR  | Hiredate   | sal  | comm | deptno |
++----------+-----------+-----------+------+------------+------+------+--------+
+|     7369 | SMITH     | CLERK     | 7902 | 1981-03-12 |  800 | NULL |     20 |
+|     7499 | ALLEN     | SALESMAN  | 7698 | 1982-03-12 | 1600 |  300 |     30 |
+|     7521 | WARD      | SALESMAN  | 7698 | 1838-03-12 | 1250 |  500 |     30 |
+|     7566 | JONES     | MANAGER   | 7839 | 1981-03-12 | 2975 | NULL |     20 |
+|     7654 | MARTIN    | SALESMAN  | 7698 | 1981-01-12 | 1250 | 1400 |     30 |
+|     7698 | BLAKE     | MANAGER   | 7839 | 1985-03-12 | 2450 | NULL |     10 |
+|     7788 | SCOTT     | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     7839 | KING      | PRESIDENT | NULL | 1981-03-12 | 5000 | NULL |     10 |
+|     7844 | TURNER    | SALESMAN  | 7689 | 1981-03-12 | 1500 |    0 |     30 |
+|     7878 | ADAMS     | CLERK     | 7788 | 1981-03-12 | 1100 | NULL |     20 |
+|     7900 | JAMES     | CLERK     | 7698 | 1981-03-12 |  950 | NULL |     30 |
+|     7902 | FORD      | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|     7934 | MILLER    | CLERK     | 7782 | 1981-03-12 | 1300 | NULL |     10 |
+| 17061521 | QIUFUKANG | CLERK     | 7782 | 2000-03-12 | NULL | NULL |     10 |
++----------+-----------+-----------+------+------------+------+------+--------+
+14 rows in set (0.00 sec)
+```
 3.2 表中入职时间（Hiredate字段）最短的人。
+```sql
+mysql> SELECT * FROM test2 WHERE Hiredate = (SELECT MAX(Hiredate) FROM test2);
++----------+-----------+-------+------+------------+------+------+--------+
+| empno    | ename     | job   | MGR  | Hiredate   | sal  | comm | deptno |
++----------+-----------+-------+------+------------+------+------+--------+
+| 17061521 | QIUFUKANG | CLERK | 7782 | 2000-03-12 | NULL | NULL |     10 |
++----------+-----------+-------+------+------------+------+------+--------+
+1 row in set (0.01 sec)
+
++ 所有入职时间最短的人就是我！
+
+```
 
 3.3 有几种职位（job字段）？在关系代数中，本操作是什么运算？
+```sql
+mysql> select distinct job
+    -> from test2;
++-----------+
+| job       |
++-----------+
+| CLERK     |
+| SALESMAN  |
+| MANAGER   |
+| ANALYST   |
+| PRESIDENT |
++-----------+
+5 rows in set (0.01 sec)
+
+mysql> select found_rows();
++--------------+
+| found_rows() |
++--------------+
+|            5 |
++--------------+
+1 row in set (0.00 sec)
+```
++ job字段有5个职位
++ 在关系代数中，本操作是什么运算:选择
 
 3.4 将 MILLER 的 comm 增加 100； 然后，找到 comm 比 MILLER 低的人；
+```sql
+mysql> select ename from test2 WHERE sal > (
+    -> select sal+100 from test2 WHERE ename='MILLER');
++--------+
+| ename  |
++--------+
+| ALLEN  |
+| JONES  |
+| BLAKE  |
+| SCOTT  |
+| KING   |
+| TURNER |
+| FORD   |
++--------+
+7 rows in set (0.01 sec)
 
+mysql> select * from test2 WHERE sal > (
+    -> select sal+100 from test2 WHERE ename='MILLER');
++-------+--------+-----------+------+------------+------+------+--------+
+| empno | ename  | job       | MGR  | Hiredate   | sal  | comm | deptno |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1982-03-12 | 1600 |  300 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-03-12 | 2975 | NULL |     20 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1985-03-12 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-03-12 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7689 | 1981-03-12 | 1500 |    0 |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-03-12 | 3000 | NULL |     20 |
++-------+--------+-----------+------+------------+------+------+--------+
+7 rows in set (0.00 sec)
+```
 3.5 计算每个人的收入(ename, sal + comm)；计算总共有多少人；计算所有人的平均收入。 提示：计算时 NULL 要当做 0 处理； 
 
 3.6 显示每个人的下属, 没有下属的显示 NULL。本操作使用关系代数中哪几种运算？
