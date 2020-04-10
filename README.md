@@ -468,7 +468,13 @@ mysql> select * from test2;
 
 + 1.选择数据库,查看当前事务隔离界别
 ```sql
-select @@tx_isolation;
+mysql> select @@tx_isolation;
++-----------------+
+| @@tx_isolation  |
++-----------------+
+| REPEATABLE-READ |
++-----------------+
+1 row in set, 1 warning (0.00 sec)
 ```
 + 2.开启事务,回滚事务
 + 3.事务级别中脏读,幻读 
